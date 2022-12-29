@@ -95,7 +95,7 @@ def analyze_root(root):
         a = analyze_root(root[0])
         b = analyze_root(root[1])
 
-        if a in "0123456789":
+        if type(a) == str and a in "0123456789":
             if b[-1] in "aeiou":
                 return b + "a"
             elif b[-1] not in "wylr":
@@ -108,8 +108,10 @@ def analyze_root(root):
                 return b[:-1] + "r"
             elif b[-2]+b[-1] == "ar":
                 return b[:-1] + "l"
+            else:
+                return b
 
-        return analyze_root(root[0]), analyze_root(root[1])
+        return ''.join([analyze_root(root[0]), analyze_root(root[1])])
 
 
 def compile_to_string(lis):
@@ -141,14 +143,22 @@ def compile_to_visual(lis):
 
 def check_b_greater(a, b):
     if type(a) == str and type(b) == str:
-        if b.startswith(a):
+        if a in "0123456789":
+            return False
+        elif b in "0123456789":
+            return True
+        elif b.startswith(a):
             return True
         elif a.startswith(b):
             return False
         return a > b
     elif type(a) == str:
+        if a in "0123456789":
+            return False
         return True
     elif type(b) == str:
+        if b in "0123456789":
+            return True
         return False
     else:
         return check_b_greater(a[0], b[0])
@@ -173,14 +183,16 @@ def custom_sort(item: str):
 
 def print_item(item: str):
     print("___")
-    print(elements[item]["root"])
-    print(compile_to_visual(elements[item]["root"])[1:-1])
-    print(analyze_root(elements[item]["root"]))
-    print('+'.join(elements[item]["base"]))
+    print("ROOT: ", compile_to_visual(elements[item]["root"])[1:-1])
+    print("LANG: ", elements[item]["lang"])
+    print("BASE: ", '+'.join(elements[item]["base"]))
     print("‾‾‾")
 
 
 def check_combinable(a, b):
+    if a == b and len(compile_to_string(a)) >= 3:
+        return True
+
     if type(a) == str and type(b) == str:
         return len(a) + len(b) <= 4 or (a == b and len(a) >= 3)
     elif type(a) == str:
@@ -194,21 +206,23 @@ def check_combinable(a, b):
 
 
 def combined(a, b):
-    if type(a) == str and type(b) == str:
+    if a == b and len(compile_to_string(a)) >= 3:
+        return ["2", a]
+    elif type(a) == str and type(b) == str:
         if a == b and len(a) >= 3:
-            return [a, "2"]
+            return ["2", a]
         return a + b
     elif type(a) == str:
         if a == b[0] and len(a) >= 3:
-            return [[a, "2"], b[1]]
+            return [["2", a], b[1]]
         return [a + b[0], b[1]]
     elif type(b) == str:
         if a[1] == b and len(b) >= 3:
-            return [a[0], [b, "2"]]
+            return [a[0], ["2", b]]
         return [a[0], a[1] + b]
     else:
-        if a[1] == b[0] and len(a[1]) >= 3:
-            return [[a[0], [a[1], "2"]], b[1]]
+        if a[1] == b[0] and len(compile_to_string(a[1])) >= 3:
+            return [[a[0], ["2", a[1]]], b[1]]
         return [[a[0], a[1] + b[0]], b[1]]
 
 
@@ -240,6 +254,8 @@ def set_item(item: str, values: list):
                 print(f"{value} not found, please initialize this item before using it to make another.")
 
     custom_sort(item)
+
+    elements[item]["lang"] = analyze_root(elements[item]["root"])
 
 
 while True:
