@@ -1,5 +1,3 @@
-import pickle
-
 single_reference = {
     'A': 'w',
     'W': 'l',
@@ -42,42 +40,28 @@ quad_reference = {
     'F': 'N',
 }
 
-try:
-    f = open("saved_elements.pickle", "rb")
-    elements = pickle.load(f)
-    f.close()
-except:
-    elements = {
-        'A': {
-            "root": "A",
-            "base": "A",
-            "lang": "",
-        },
-        'W': {
-            "root": "W",
-            "base": "W",
-            "lang": "",
-        },
-        'E': {
-            "root": "E",
-            "base": "E",
-            "lang": "",
-        },
-        'F': {
-            "root": "F",
-            "base": "F",
-            "lang": "",
-        },
-    }
-
-def save():
-    try:
-        f = open("saved_elements.pickle", "wb")
-        pickle.dump(elements, f)
-        f.close()
-        return True
-    except:
-        return False
+elements = {
+    'A': {
+        "root": "A",
+        "base": "A",
+        "lang": "",
+    },
+    'W': {
+        "root": "W",
+        "base": "W",
+        "lang": "",
+    },
+    'E': {
+        "root": "E",
+        "base": "E",
+        "lang": "",
+    },
+    'F': {
+        "root": "F",
+        "base": "F",
+        "lang": "",
+    },
+}
 
 def analyze_syllable(syllable):
     if syllable in "0123456789":
@@ -270,11 +254,8 @@ def set_item(item: str, values: list):
 
 while True:
     print(
-        "Enter in your query in format 'val=val1+val2' to set a new item or 'val' to get data about an item. Enter 'save' to save and quit.")
+        "Enter in your query in format 'val=val1+val2' to set a new item or 'val' to get data about an item.")
     query = input()
-
-    if query == "save":
-        print("Saved data successfully." if save() else "Failed to save data.")
 
     if "=" in query:
         query = query.split("=")
