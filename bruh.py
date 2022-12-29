@@ -70,6 +70,14 @@ except:
         },
     }
 
+def save():
+    try:
+        f = open("saved_elements.pickle", "wb")
+        pickle.dump(elements, f)
+        f.close()
+        return True
+    except:
+        return False
 
 def analyze_syllable(syllable):
     if syllable in "0123456789":
@@ -192,6 +200,8 @@ def print_item(item: str):
 def check_combinable(a, b):
     if a == b and len(compile_to_string(a)) >= 3:
         return True
+    elif type(a) == list and type(a[0]) == str and a[0] in "0123456789":
+        return False
 
     if type(a) == str and type(b) == str:
         return len(a) + len(b) <= 4 or (a == b and len(a) >= 3)
@@ -262,6 +272,9 @@ while True:
     print(
         "Enter in your query in format 'val=val1+val2' to set a new item or 'val' to get data about an item. Enter 'save' to save and quit.")
     query = input()
+
+    if query == "save":
+        print("Saved data successfully." if save() else "Failed to save data.")
 
     if "=" in query:
         query = query.split("=")
