@@ -47,7 +47,7 @@
  [],
  False,
  False,
- 1672347159,
+ 1672348027,
  [('run',
    '/home/crispy/.local/lib/python3.10/site-packages/PyInstaller/bootloader/Linux-64bit-intel/run',
    'EXECUTABLE')])
