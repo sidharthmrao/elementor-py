@@ -150,6 +150,10 @@ def check_b_greater(a, b):
             return True
         elif a.startswith(b):
             return False
+        elif len(b) > len(a):
+            return True
+        elif len(a) > len(b):
+            return False
         return a > b
     elif type(a) == str:
         if a in "0123456789":
@@ -197,6 +201,8 @@ def check_combinable(a, b):
     if type(a) == str and type(b) == str:
         return len(a) + len(b) <= 4 or (a == b and len(a) >= 3)
     elif type(a) == str:
+        if type(b[0]) == list or b[0] in "0123456789":
+            return False
         return len(a) + len(b[0]) <= 4 or (a == b[0] and len(a) >= 3)
     elif type(b) == str:
         if type(a[1]) == str:
@@ -239,7 +245,7 @@ def set_item(item: str, values: list):
     elif all(value in elements.keys() for value in values):
         elements[item]["root"] = [elements[value]["root"] for value in values]
 
-        custom_sort(item)
+        # custom_sort(item)
         current = elements[item]["root"]
         if type(current) != str:
             if len(current) > 1:
