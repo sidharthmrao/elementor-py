@@ -13,15 +13,21 @@ double_reference = {
         'F': 'b',
     },
     'W': {
+        'A': 'm',
         'W': 'n',
         'E': 't',
         'F': 'd',
     },
     'E': {
+        'A': 'p',
+        'W': 't',
         'E': 'c',
         'F': 'j',
     },
     'F': {
+        'A': 'b',
+        'W': 'd',
+        'E': 'j',
         'F': 'g',
     }
 }
@@ -66,16 +72,17 @@ elements = {
 def analyze_syllable(syllable):
     if syllable in "0123456789":
         return syllable
-    match len(syllable):
-        case 1:
-            return single_reference[syllable] + "a"
-        case 2:
-            return double_reference[syllable[0]][syllable[1]] + "a"
-        case 3:
-            return double_reference[syllable[0]][syllable[1]] + triple_reference[syllable[2]]
-        case _:
-            return double_reference[syllable[0]][syllable[1]] + triple_reference[syllable[2]] + quad_reference[
-                syllable[3]]
+
+    le = len(syllable)
+    if le == 1:
+        return single_reference[syllable] + "a"
+    elif le == 2:
+        return double_reference[syllable[0]][syllable[1]] + "a"
+    elif le == 3:
+        return double_reference[syllable[0]][syllable[1]] + triple_reference[syllable[2]]
+    else:
+        return double_reference[syllable[0]][syllable[1]] + triple_reference[syllable[2]] + quad_reference[
+            syllable[3]]
 
 
 def analyze_root(root):
@@ -254,10 +261,13 @@ def set_item(item: str, values: list):
 
 while True:
     print(
-        "Enter in your query in format 'val=val1+val2' to set a new item or 'val' to get data about an item.")
+        "Enter in your query in format 'val=val1+val2' to set a new item or 'val' to get data about an item. Enter 'exit' to exit.")
     query = input()
 
-    if "=" in query:
+    if query == "exit":
+        break
+
+    elif "=" in query:
         query = query.split("=")
 
         if len(query) > 2:
