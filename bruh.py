@@ -14,7 +14,7 @@ double_reference = {
     },
     'W': {
         'A': 'm',
-        'W': 'n',
+        'W': 'g',
         'E': 't',
         'F': 'd',
     },
@@ -133,9 +133,9 @@ def compile_to_string(lis):
 
 def compile_to_visual(lis):
     if type(lis) == str:
-        return "(" + lis + ")"
+        return lis
     elif len(lis) == 1:
-        return "(" + lis[0] + ")"
+        return lis[0]
 
     return "(" + compile_to_visual(lis[0]) + compile_to_visual(lis[1]) + ")"
 
@@ -186,7 +186,10 @@ def custom_sort(item: str):
 
 def print_item(item: str):
     print("___")
-    print("ROOT: ", compile_to_visual(elements[item]["root"])[1:-1])
+    root = compile_to_visual(elements[item]["root"])
+    if "(" in root:
+        root = root[1:-1]
+    print("ROOT: ", root)
     print("LANG: ", elements[item]["lang"])
     print("BASE: ", '+'.join(elements[item]["base"]))
     print("‾‾‾")
@@ -201,12 +204,20 @@ def check_combinable(a, b):
     if type(a) == str and type(b) == str:
         return len(a) + len(b) <= 4 or (a == b and len(a) >= 3)
     elif type(a) == str:
-        if type(b[0]) == list or b[0] in "0123456789":
+        if type(b[0]) == list:
+            if len(b[0]) == 1:
+                return len(a) + len(b[0][0]) <= 4
+            return False
+        elif b in "0123456789":
             return False
         return len(a) + len(b[0]) <= 4 or (a == b[0] and len(a) >= 3)
     elif type(b) == str:
         if type(a[1]) == str:
             return len(a[1]) + len(b) <= 4 or (a[1] == b and len(b) >= 3)
+        elif type(a[1]) == list:
+            if len(a[1]) == 1:
+                return len(a[1][0]) + len(b) <= 4
+            return False
         return False
     else:
         return len(a[-1]) + len(b[0]) <= 4 or (a[-1] == b[0] and len(a[-1]) >= 3)
@@ -222,10 +233,16 @@ def combined(a, b):
     elif type(a) == str:
         if a == b[0] and len(a) >= 3:
             return [["2", a], b[1]]
+        if type(b[0]) == list:
+            if len(b[0]) == 1:
+                return [a + b[0][0], b[1]]
         return [a + b[0], b[1]]
     elif type(b) == str:
         if a[1] == b and len(b) >= 3:
             return [a[0], ["2", b]]
+        if type(a[1]) == list:
+            if len(a[1]) == 1:
+                return [a[0], a[1][0] + b]
         return [a[0], a[1] + b]
     else:
         if a[1] == b[0] and len(compile_to_string(a[1])) >= 3:
@@ -245,7 +262,7 @@ def set_item(item: str, values: list):
     elif all(value in elements.keys() for value in values):
         elements[item]["root"] = [elements[value]["root"] for value in values]
 
-        # custom_sort(item)
+        custom_sort(item)
         current = elements[item]["root"]
         if type(current) != str:
             if len(current) > 1:
